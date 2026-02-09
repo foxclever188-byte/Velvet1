@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velvet | The Art Atelier</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+       (function(){
+          // Replace with your actual Public Key from EmailJS
+          emailjs.init("ACeU8R-EpqgmXgoMW"); 
+       })();
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap');
+        
+        /* Base */
+        html, body { height: 100%; scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f9f9f9; color: #1a1a1a; display: flex; flex-direction: column; overflow-y: auto; }
+        .serif { font-family: 'Bodoni Moda', serif; }
+        
+        /* Transitions */
+        .view-section { display: none; opacity: 0; transition: opacity 0.4s ease; }
+        .view-section.active { display: block; opacity: 1; }
+        
+        /* Inputs & Buttons */
+        input, select, textarea { border: 1px solid #e5e7eb; padding: 0.8rem; font-size: 0.85rem; width: 100%; margin-bottom: 0.8rem; outline: none; background: white; border-radius: 0; }
+        input:focus, select:focus, textarea:focus { border-color: black; }
+        
+        .btn-black { background: black; color: white; text-transform: uppercase; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; padding: 1rem; cursor: pointer; border: none; width: 100%; transition: 0.3s; }
+        .btn-black:hover { background: #333; }
+        
+        .btn-outline { background: transparent; border: 1px solid black; color: black; text-transform: uppercase; font-size: 10px; font-weight: 700; padding: 1rem; cursor: pointer; width: 100%; letter-spacing: 0.1em; }
+        .btn-outline:hover { background: black; color: white; }
+
+        /* Dashboard Tabs */
+        .tab-btn { padding-bottom: 5px; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.2s; }
+        .tab-btn.active { border-bottom: 2px solid black; color: black; }
+        .tab-btn.inactive { color: #999; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+    </style>
+</head>
+<body>
+
+    <header class="bg-white border-b sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-5 flex justify-between items-center">
+            <h1 class="text-3xl serif font-bold tracking-tighter cursor-pointer" onclick="app.showView('home')">VELVET</h1>
+            <div class="hidden lg:flex space-x-8 uppercase text-[10px] tracking-[0.2em] font-bold">
+                <button onclick="app.showView('gallery')" class="hover:text-amber-700">Gallery</button>
+                <button onclick="app.showView('custom')" class="hover:text-amber-700">Custom Order</button>
+            </div>
+            <div class="flex items-center space-x-6">
+                <button onclick="app.showView('profile')" class="flex items-center gap-2 hover:text-amber-700">
+                    <i class="fa-regular fa-user text-lg"></i>
+                    <span id="nav-user-name" class="text-[10px] uppercase font-bold hidden md:inline">Sign In</span>
+                </button>
+                <button onclick="app.showView('cart')" class="relative hover:text-amber-700">
+                    <i class="fa-solid fa-cart-shopping text-lg"></i>
+                    <span id="cart-badge" class="absolute -top-2 -right-2 bg-black text-white text-[9px] font-bold rounded-full px-1.5 h-4 flex items-center justify-center">0</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main id="home-view" class="view-section active">
+        <section class="h-[80vh] relative flex items-center justify-center bg-zinc-900 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=1600" class="absolute inset-0 w-full h-full object-cover opacity-60">
+            <div class="relative z-10 text-center text-white px-4">
+                <h2 class="text-6xl md:text-8xl serif italic mb-6 animate-fade-in">Artistry Defined</h2>
+                <p class="text-xs tracking-[0.4em] uppercase mb-10">Curating Soul for Your Space</p>
+                <button onclick="app.showView('gallery')" class="border border-white bg-transparent text-white px-10 py-4 text-[10px] uppercase font-bold hover:bg-white hover:text-black transition">Enter Gallery</button>
+            </div>
+        </section>
+        
+        <section class="py-24 container mx-auto px-6 text-center bg-white">
+            <h3 class="serif text-4xl mb-6">The Atelier</h3>
+            <p class="max-w-2xl mx-auto text-sm text-gray-500 leading-loose">
+                Velvet connects you with the finest printed and hand-drawn artworks. 
+                From the bustling streets of Dhaka to the serenity of nature, we frame emotions.
+            </p>
+        </section>
+
+        <section class="py-20 bg-zinc-50">
+            <div class="container mx-auto px-6">
+                <h3 class="serif text-3xl mb-12 text-center">Curated Collections</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div onclick="app.showView('gallery')" class="relative h-[500px] group cursor-pointer overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1549490349-8643362247b5?w=800" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition"></div>
+                        <div class="absolute bottom-8 left-8 text-white">
+                            <h4 class="serif text-2xl italic">Printed Works</h4>
+                            <p class="text-[10px] uppercase tracking-widest mt-2">Explore &rarr;</p>
+                        </div>
+                    </div>
+                    <div onclick="app.showView('gallery')" class="relative h-[500px] group cursor-pointer overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition"></div>
+                        <div class="absolute bottom-8 left-8 text-white">
+                            <h4 class="serif text-2xl italic">Hand Drawn</h4>
+                            <p class="text-[10px] uppercase tracking-widest mt-2">Explore &rarr;</p>
+                        </div>
+                    </div>
+                    <div onclick="app.showView('custom')" class="relative h-[500px] group cursor-pointer overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?w=800" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition"></div>
+                        <div class="absolute bottom-8 left-8 text-white">
+                            <h4 class="serif text-2xl italic">Commissions</h4>
+                            <p class="text-[10px] uppercase tracking-widest mt-2">Request &rarr;</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 container mx-auto px-6">
+            <div class="flex justify-between items-end mb-12">
+                <h3 class="serif text-3xl">New Arrivals</h3>
+                <button onclick="app.showView('gallery')" class="text-[10px] font-bold uppercase border-b border-black pb-1">View All</button>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="bg-white">
+                    <img src="https://images.unsplash.com/photo-1577720580479-7d839d829c73?w=600" class="aspect-[3/4] object-cover mb-4">
+                    <p class="text-[10px] font-bold uppercase">Urban Tides</p>
+                    <p class="text-xs text-gray-500">1800 TK</p>
+                </div>
+                <div class="bg-white">
+                    <img src="https://images.unsplash.com/photo-1515405295579-ba7b45403062?w=600" class="aspect-[3/4] object-cover mb-4">
+                    <p class="text-[10px] font-bold uppercase">Raw Emotion</p>
+                    <p class="text-xs text-gray-500">6200 TK</p>
+                </div>
+                <div class="bg-white">
+                    <img src="https://images.unsplash.com/photo-1549490349-8643362247b5?w=600" class="aspect-[3/4] object-cover mb-4">
+                    <p class="text-[10px] font-bold uppercase">Midnight Rain</p>
+                    <p class="text-xs text-gray-500">1200 TK</p>
+                </div>
+                <div class="bg-white">
+                    <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600" class="aspect-[3/4] object-cover mb-4">
+                    <p class="text-[10px] font-bold uppercase">Golden Leaves</p>
+                    <p class="text-xs text-gray-500">8500 TK</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 bg-zinc-900 text-white">
+            <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h3 class="serif text-4xl mb-6 italic">The Process</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed mb-8">
+                        Every piece at Velvet is treated with the utmost respect for the medium. Our printed works use archival-grade paper that lasts a lifetime, while our hand-drawn pieces are crafted by the country's emerging talents using premium charcoal and oils.
+                    </p>
+                    <div class="grid grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">Authenticity</h4>
+                            <p class="text-xs text-gray-500">Every original piece comes with a certificate of authenticity signed by the artist.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg mb-2">Quality</h4>
+                            <p class="text-xs text-gray-500">Museum-quality framing options available upon special request.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="h-[400px]">
+                    <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-700">
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 bg-amber-50">
+            <div class="container mx-auto px-6 text-center max-w-2xl">
+                <h3 class="serif text-3xl mb-4">Join the Inner Circle</h3>
+                <p class="text-xs text-gray-600 mb-8 uppercase tracking-widest">Be the first to know about new exhibitions and drops.</p>
+                <div class="flex gap-2">
+                    <input placeholder="ENTER YOUR EMAIL" class="bg-transparent border-b border-black !border-t-0 !border-x-0 !mb-0 px-0">
+                    <button class="text-[10px] font-bold uppercase tracking-widest bg-black text-white px-6">Subscribe</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <section id="gallery-view" class="view-section container mx-auto px-6 py-12">
+        <div class="flex flex-wrap justify-center gap-8 mb-12 border-b pb-4">
+            <button onclick="app.filterGallery('all')" id="tab-all" class="text-[10px] font-bold uppercase tracking-widest tab-btn active">All Collection</button>
+            <button onclick="app.filterGallery('printed')" id="tab-printed" class="text-[10px] font-bold uppercase tracking-widest tab-btn inactive">Printed</button>
+            <button onclick="app.filterGallery('handdrawn')" id="tab-handdrawn" class="text-[10px] font-bold uppercase tracking-widest tab-btn inactive">Hand-Drawn</button>
+        </div>
+        <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8"></div>
+    </section>
+
+    <section id="custom-view" class="view-section container mx-auto px-6 py-16">
+        <div class="max-w-3xl mx-auto bg-white border p-12 text-center shadow-sm">
+            <h2 class="serif text-4xl mb-6">Custom Commissions</h2>
+            <p class="text-sm text-gray-600 mb-8 leading-relaxed">
+                Our artists accept a limited number of custom commissions (Oil, Charcoal, Digital Portrait) per month.
+                Please contact us directly.
+            </p>
+            <div class="space-y-6">
+                <div class="p-4 bg-zinc-50 border">
+                    <p class="text-[9px] font-bold uppercase text-gray-400 mb-1">Email Inquiries</p>
+                    <p class="serif text-xl">commissions@velvet.com.bd</p>
+                </div>
+                <div class="p-4 bg-zinc-50 border">
+                    <p class="text-[9px] font-bold uppercase text-gray-400 mb-1">WhatsApp / Phone</p>
+                    <p class="serif text-xl">+880 1700-000000</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="profile-view" class="view-section container mx-auto px-6 py-12">
+        <div id="auth-container" class="max-w-md mx-auto bg-white border p-8 shadow-lg">
+            <div class="flex mb-8 border-b">
+                <button onclick="app.toggleAuth('login')" id="btn-tab-login" class="flex-1 pb-3 text-center text-[10px] font-bold uppercase tab-btn active">Sign In</button>
+                <button onclick="app.toggleAuth('register')" id="btn-tab-register" class="flex-1 pb-3 text-center text-[10px] font-bold uppercase tab-btn inactive">Register</button>
+            </div>
+            <div id="form-login">
+                <input id="li-email" placeholder="Email Address">
+                <input id="li-pass" type="password" placeholder="Password">
+                <button onclick="app.login()" class="btn-black mt-4">Access Account</button>
+            </div>
+            <div id="form-register" class="hidden">
+                <input id="su-name" placeholder="Full Name">
+                <input id="su-email" placeholder="Email Address">
+                <input id="su-phone" placeholder="Phone Number">
+                <input id="su-pass" type="password" placeholder="Password">
+                <button onclick="app.register()" class="btn-black mt-4">Create Account</button>
+            </div>
+        </div>
+
+        <div id="dashboard" class="hidden max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <aside class="space-y-1">
+                <div class="p-6 border bg-white mb-4">
+                    <p class="text-[9px] font-bold uppercase text-gray-400">Welcome back</p>
+                    <h2 id="dash-name" class="serif text-2xl">User</h2>
+                </div>
+                <button onclick="app.showDash('orders')" class="w-full text-left border bg-white p-4 text-[10px] font-bold uppercase hover:bg-black hover:text-white transition">My Orders</button>
+                <button onclick="app.showDash('addresses')" class="w-full text-left border bg-white p-4 text-[10px] font-bold uppercase hover:bg-black hover:text-white transition">Address Book</button>
+                <button onclick="app.showDash('settings')" class="w-full text-left border bg-white p-4 text-[10px] font-bold uppercase hover:bg-black hover:text-white transition">Settings</button>
+                <button onclick="app.logout()" class="w-full text-left border bg-white p-4 text-[10px] font-bold uppercase text-red-600 hover:bg-red-50">Log Out</button>
+            </aside>
+
+            <main class="lg:col-span-3">
+                <div id="dash-orders" class="dash-part bg-white border p-8 min-h-[500px]">
+                    <div class="flex gap-6 border-b mb-6 overflow-x-auto pb-2">
+                        <button onclick="app.renderOrders('all')" class="text-[10px] font-bold uppercase hover:text-amber-600">All</button>
+                        <button onclick="app.renderOrders('Pending')" class="text-[10px] font-bold uppercase hover:text-amber-600">Pending</button>
+                        <button onclick="app.renderOrders('Received')" class="text-[10px] font-bold uppercase hover:text-amber-600">Received</button>
+                        <button onclick="app.renderOrders('To Review')" class="text-[10px] font-bold uppercase hover:text-amber-600 text-amber-700">To Review</button>
+                    </div>
+                    <div id="order-list" class="space-y-4"></div>
+                </div>
+
+                <div id="dash-addresses" class="dash-part hidden bg-white border p-8 min-h-[500px]">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="serif text-2xl">Address Book</h2>
+                        <button onclick="app.toggleAddrForm(true)" class="btn-black !w-auto px-6 py-2">Add New</button>
+                    </div>
+
+                    <div id="addr-form" class="hidden bg-zinc-50 p-6 border mb-6">
+                        <h4 class="text-[10px] font-bold uppercase mb-4">New Delivery Location</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input id="addr-label" placeholder="Label (e.g. Home, Office)">
+                            <input id="addr-postal" placeholder="Postal Code" type="number">
+                            
+                            <select id="addr-div" onchange="app.loadDistricts()" class="md:col-span-2"><option value="">Select Division</option></select>
+                            <select id="addr-dist" onchange="app.loadUpazilas()"><option value="">Select District</option></select>
+                            <select id="addr-upa"><option value="">Select Thana / Upazila</option></select>
+                            
+                            <textarea id="addr-full" placeholder="Full Address: House #, Road #, Flat #, Floor, Landmarks etc." class="md:col-span-2 h-24 resize-none"></textarea>
+                        </div>
+                        <div class="flex gap-3 mt-4">
+                            <button onclick="app.saveAddress()" class="btn-black">Save Address</button>
+                            <button onclick="app.toggleAddrForm(false)" class="btn-outline bg-white">Cancel</button>
+                        </div>
+                    </div>
+                    <div id="addr-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </div>
+
+                <div id="dash-settings" class="dash-part hidden bg-white border p-8 min-h-[500px]">
+                    <h2 class="serif text-2xl mb-6">Profile Settings</h2>
+                    <div class="max-w-md space-y-6">
+                        <div><label class="text-[9px] font-bold uppercase">Full Name</label><input id="edit-name"></div>
+                        <div class="flex items-end gap-2"><div class="w-full"><label class="text-[9px] font-bold uppercase">Email</label><input id="edit-email" readonly class="bg-gray-100 text-gray-500 cursor-not-allowed"></div></div>
+                        <div class="flex items-end gap-2"><div class="w-full"><label class="text-[9px] font-bold uppercase">Phone</label><input id="edit-phone" readonly class="bg-gray-100 text-gray-500 cursor-not-allowed"></div></div>
+                        <button onclick="app.saveBasicInfo()" class="btn-outline mt-4">Update Basic Info</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </section>
+
+    <section id="cart-view" class="view-section container mx-auto px-6 py-12">
+        <div id="cart-container" class="max-w-5xl mx-auto"></div>
+    </section>
+
+    <footer class="bg-zinc-900 text-white py-16 mt-auto">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-[10px] uppercase tracking-widest">
+            <div class="col-span-1 md:col-span-2">
+                <h2 class="serif text-2xl mb-4 normal-case">Velvet.</h2>
+                <p class="text-gray-400 max-w-xs normal-case tracking-normal">An online art atelier based in Dhaka, dedicated to bringing aesthetic excellence to your doorstep.</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6 text-white">Navigate</h4>
+                <ul class="space-y-3 text-gray-400">
+                    <li onclick="app.showView('gallery')" class="cursor-pointer hover:text-white">Shop Art</li>
+                    <li onclick="app.showView('custom')" class="cursor-pointer hover:text-white">Commissions</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-6 text-white">Legal</h4>
+                <ul class="space-y-3 text-gray-400">
+                    <li class="cursor-pointer hover:text-white">Shipping Policy</li>
+                    <li class="cursor-pointer hover:text-white">Returns</li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. GEO DATA: ALL 64 DISTRICTS & MAJOR THANAS ---
+        const bdData = {
+            "Dhaka": {
+                "Dhaka": ["Adabor", "Badda", "Banani", "Bangshal", "Cantonment", "Chak Bazar", "Dakshinkhan", "Darus Salam", "Demra", "Dhanmondi", "Gendaria", "Gulshan", "Hazaribagh", "Jatrabari", "Kadamtali", "Kafrul", "Kalabagan", "Kamrangirchar", "Khilgaon", "Khilkhet", "Kotwali", "Lalbagh", "Mirpur", "Mohammadpur", "Motijheel", "New Market", "Pallabi", "Paltan", "Ramna", "Rampura", "Sabujbagh", "Shah Ali", "Shahbag", "Sher-e-Bangla Nagar", "Shyampur", "Sutrapur", "Tejgaon", "Tejgaon Ind. Area", "Turag", "Uttara", "Uttar Khan"],
+                "Faridpur": ["Alfadanga", "Bhanga", "Boalmari", "Charbhadrasan", "Faridpur Sadar", "Madhukhali", "Nagarkanda", "Sadarpur", "Saltha"],
+                "Gazipur": ["Gazipur Sadar", "Kaliakair", "Kaliganj", "Kapasia", "Sreepur"],
+                "Gopalganj": ["Gopalganj Sadar", "Kashiani", "Kotalipara", "Muksudpur", "Tungipara"],
+                "Kishoreganj": ["Austagram", "Bajitpur", "Bhairab", "Hossainpur", "Itna", "Karimganj", "Katiadi", "Kishoreganj Sadar", "Kuliarchar", "Mithamain", "Nikli", "Pakundia", "Tarail"],
+                "Madaripur": ["Kalkini", "Madaripur Sadar", "Rajoir", "Shibchar"],
+                "Manikganj": ["Daulatpur", "Ghior", "Harirampur", "Manikganj Sadar", "Saturia", "Shivalaya", "Singair"],
+                "Munshiganj": ["Gazaria", "Lohajang", "Munshiganj Sadar", "Sirajdikhan", "Sreenagar", "Tongibari"],
+                "Narayanganj": ["Araihazar", "Bandar", "Narayanganj Sadar", "Rupganj", "Sonagaraon"],
+                "Narsingdi": ["Belabo", "Monohardi", "Narsingdi Sadar", "Palash", "Raipura", "Shibpur"],
+                "Rajbari": ["Baliakandi", "Goalandaghat", "Kalukhali", "Pangsha", "Rajbari Sadar"],
+                "Shariatpur": ["Bhedarganj", "Damudya", "Gosairhat", "Naria", "Shariatpur Sadar", "Zajira"],
+                "Tangail": ["Basail", "Bhuapur", "Delduar", "Dhanbari", "Ghatail", "Gopalpur", "Kalihati", "Madhupur", "Mirzapur", "Nagarpur", "Sakhipur", "Tangail Sadar"]
+            },
+            "Chittagong": {
+                "Bandarban": ["Ali Kadam", "Bandarban Sadar", "Lama", "Naikhongchhari", "Rowangchhari", "Ruma", "Thanchi"],
+                "Brahmanbaria": ["Akhaura", "Ashuganj", "Bancharampur", "Bijoynagar", "Brahmanbaria Sadar", "Kasba", "Nabinagar", "Nasirnagar", "Sarail"],
+                "Chandpur": ["Chandpur Sadar", "Faridganj", "Haimchar", "Haziganj", "Kachua", "Matlab Dakshin", "Matlab Uttar", "Shahrasti"],
+                "Chittagong": ["Anwara", "Banshkhali", "Boalkhali", "Chandanaish", "Fatikchhari", "Hathazari", "Karnaphuli", "Lohagara", "Mirsharai", "Patiya", "Rangunia", "Raozan", "Sandwip", "Satkania", "Sitakunda", "Panchlaish", "Double Mooring", "Kotwali", "Pahartali"],
+                "Comilla": ["Barura", "Brahmanpara", "Burichang", "Chandina", "Chauddagram", "Comilla Sadar", "Comilla Sadar Dakshin", "Daudkandi", "Debidwar", "Homna", "Laksam", "Lalmai", "Manoharganj", "Meghna", "Muradnagar", "Nangalkot", "Titas"],
+                "Cox's Bazar": ["Chakaria", "Cox's Bazar Sadar", "Kutubdia", "Maheshkhali", "Pekua", "Ramu", "Teknaf", "Ukhia"],
+                "Feni": ["Chhagalnaiya", "Daganbhuiyan", "Feni Sadar", "Fulgazi", "Parshuram", "Sonagazi"],
+                "Khagrachhari": ["Dighinala", "Khagrachhari Sadar", "Lakshmichhari", "Mahalchhari", "Manikchhari", "Matiranga", "Panchhari", "Ramgarh"],
+                "Lakshmipur": ["Kamalnagar", "Lakshmipur Sadar", "Raipur", "Ramganj", "Ramgati"],
+                "Noakhali": ["Begumganj", "Chatkhil", "Companiganj", "Hatiya", "Kabirhat", "Noakhali Sadar", "Senbagh", "Sonaimuri", "Subarnachar"],
+                "Rangamati": ["Bagaichhari", "Barkal", "Belaichhari", "Juraichhari", "Kaptai", "Kawkhali", "Langadu", "Naniarchar", "Rajasthali", "Rangamati Sadar"]
+            },
+            "Rajshahi": {
+                "Bogura": ["Adamdighi", "Bogura Sadar", "Dhunat", "Dhupchanchia", "Gabtali", "Kahaloo", "Nandigram", "Sariakandi", "Shajahanpur", "Sherpur", "Shibganj", "Sonatala"],
+                "Chapainawabganj": ["Bholahat", "Chapainawabganj Sadar", "Gomastapur", "Nachole", "Shibganj"],
+                "Joypurhat": ["Akkelpur", "Joypurhat Sadar", "Kalai", "Khetlal", "Panchbibi"],
+                "Naogaon": ["Atrai", "Badalgachhi", "Dhamoirhat", "Manda", "Mohadevpur", "Naogaon Sadar", "Niamatpur", "Patnitala", "Porsha", "Raninagar", "Sapahar"],
+                "Natore": ["Bagatipara", "Baraigram", "Gurudaspur", "Lalpur", "Naldanga", "Natore Sadar", "Singra"],
+                "Pabna": ["Atgharia", "Bera", "Bhangura", "Chatmohar", "Faridpur", "Ishwardi", "Pabna Sadar", "Santhia", "Sujanagar"],
+                "Rajshahi": ["Bagha", "Bagmara", "Charghat", "Durgapur", "Godagari", "Mohanpur", "Paba", "Puthia", "Tanore", "Boalia", "Matihar", "Rajpara", "Shah Mokhdum"],
+                "Sirajganj": ["Belkuchi", "Chauhali", "Kamarkhanda", "Kazipur", "Raiganj", "Shahjadpur", "Sirajganj Sadar", "Tarash", "Ullahpara"]
+            },
+            "Khulna": {
+                "Bagerhat": ["Bagerhat Sadar", "Chitalmari", "Fakirhat", "Kachua", "Mollahat", "Mongla", "Morrelganj", "Rampal", "Sarankhola"],
+                "Chuadanga": ["Alamdanga", "Chuadanga Sadar", "Damurhuda", "Jibannagar"],
+                "Jashore": ["Abhaynagar", "Bagherpara", "Chaugachha", "Jashore Sadar", "Jhikargachha", "Keshabpur", "Manirampur", "Sharsha"],
+                "Jhenaidah": ["Harinakunda", "Jhenaidah Sadar", "Kaliganj", "Kotchandpur", "Maheshpur", "Shailkupa"],
+                "Khulna": ["Batiaghata", "Dacope", "Daulatpur", "Dighalia", "Dumuria", "Harintana", "Khalishpur", "Khan Jahan Ali", "Khulna Sadar", "Kotwali", "Koyra", "Paikgachha", "Phultala", "Rupsha", "Sonadanga", "Terokhada"],
+                "Kushtia": ["Bheramara", "Daulatpur", "Khoksa", "Kumarkhali", "Kushtia Sadar", "Mirpur"],
+                "Magura": ["Magura Sadar", "Mohammadpur", "Shalikha", "Sreepur"],
+                "Meherpur": ["Gangni", "Meherpur Sadar", "Mujibnagar"],
+                "Narail": ["Kalia", "Lohagara", "Narail Sadar"],
+                "Satkhira": ["Assasuni", "Debhata", "Kalaroa", "Kaliganj", "Satkhira Sadar", "Shyamnagar", "Tala"]
+            },
+            "Barisal": {
+                "Barisal": ["Agailjhara", "Babuganj", "Bakerganj", "Banaripara", "Barisal Sadar", "Gaurnadi", "Hizla", "Mehendiganj", "Muladi", "Wazirpur"],
+                "Barguna": ["Amtali", "Bamna", "Barguna Sadar", "Betagi", "Patharghata", "Taltali"],
+                "Bhola": ["Bhola Sadar", "Burhanuddin", "Char Fasson", "Daulatkhan", "Lalmohan", "Manpura", "Tazumuddin"],
+                "Jhalokati": ["Jhalokati Sadar", "Kathalia", "Nalchity", "Rajapur"],
+                "Patuakhali": ["Bauphal", "Dashmina", "Dumki", "Galachipa", "Kalapara", "Mirzaganj", "Patuakhali Sadar", "Rangabali"],
+                "Pirojpur": ["Bhandaria", "Indurkani", "Kawkhali", "Mathbaria", "Nazirpur", "Nesarabad", "Pirojpur Sadar"]
+            },
+            "Sylhet": {
+                "Habiganj": ["Ajmiriganj", "Bahubal", "Baniyachong", "Chunarughat", "Habiganj Sadar", "Lakhai", "Madhabpur", "Nabiganj", "Shaistaganj"],
+                "Moulvibazar": ["Barlekha", "Juri", "Kamalganj", "Kulaura", "Moulvibazar Sadar", "Rajnagar", "Sreemangal"],
+                "Sunamganj": ["Bishwamvarpur", "Chhatak", "Dakshin Sunamganj", "Derai", "Dharmapasha", "Dowarabazar", "Jagannathpur", "Jamalganj", "Sullah", "Sunamganj Sadar", "Tahirpur"],
+                "Sylhet": ["Balaganj", "Beanibazar", "Bishwanath", "Companiganj", "Dakshin Surma", "Fenchuganj", "Golapganj", "Gowainghat", "Jaintiapur", "Kanaighat", "Osmani Nagar", "Sylhet Sadar", "Zakiganj"]
+            },
+            "Rangpur": {
+                "Dinajpur": ["Birampur", "Birganj", "Biral", "Bochaganj", "Chirirbandar", "Dinajpur Sadar", "Ghoraghat", "Hakimpur", "Kaharole", "Khansama", "Nawabganj", "Parbatipur", "Phulbari"],
+                "Gaibandha": ["Gaibandha Sadar", "Gobindaganj", "Palashbari", "Phulchhari", "Sadullapur", "Saghata", "Sundarganj"],
+                "Kurigram": ["Bhurungamari", "Char Rajibpur", "Chilmari", "Kurigram Sadar", "Nageshwari", "Phulbari", "Rajarhat", "Raomari", "Ulipur"],
+                "Lalmonirhat": ["Aditmari", "Hatibandha", "Kaliganj", "Lalmonirhat Sadar", "Patgram"],
+                "Nilphamari": ["Dimla", "Domar", "Jaldhaka", "Kishoreganj", "Nilphamari Sadar", "Saidpur"],
+                "Panchagarh": ["Atwari", "Boda", "Debiganj", "Panchagarh Sadar", "Tetulia"],
+                "Rangpur": ["Badarganj", "Gangachara", "Kaunia", "Mithapukur", "Pirgachha", "Pirganj", "Rangpur Sadar", "Taraganj"],
+                "Thakurgaon": ["Baliadangi", "Haripur", "Pirganj", "Ranisankail", "Thakurgaon Sadar"]
+            },
+            "Mymensingh": {
+                "Jamalpur": ["Bakshiganj", "Dewanganj", "Islampur", "Jamalpur Sadar", "Madarganj", "Melandaha", "Sarishabari"],
+                "Mymensingh": ["Bhaluka", "Dhobaura", "Fulbaria", "Gaffargaon", "Gauripur", "Haluaghat", "Ishwarganj", "Muktagachha", "Mymensingh Sadar", "Nandail", "Phulpur", "Tara Khanda", "Trishal"],
+                "Netrokona": ["Atpara", "Barhatta", "Durgapur", "Kalmakanda", "Kendua", "Khaliajuri", "Madan", "Mohanganj", "Netrokona Sadar", "Purbadhala"],
+                "Sherpur": ["Jhenaigati", "Nakla", "Nalitabari", "Sherpur Sadar", "Sreebardi"]
+            }
+        };
+
+        const products = [
+            { id: 101, type: 'printed', name: "Midnight Rain", price: 1200, img: "https://images.unsplash.com/photo-1549490349-8643362247b5?w=600" },
+            { id: 102, type: 'handdrawn', name: "Golden Leaves", price: 8500, img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600" },
+            { id: 103, type: 'printed', name: "Dhaka Soul", price: 1500, img: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600" },
+            { id: 104, type: 'handdrawn', name: "Charcoal Face", price: 4500, img: "https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?w=600" },
+            { id: 105, type: 'printed', name: "Urban Tides", price: 1800, img: "https://images.unsplash.com/photo-1577720580479-7d839d829c73?w=600" },
+            { id: 106, type: 'handdrawn', name: "Abstract Fury", price: 6200, img: "https://images.unsplash.com/photo-1515405295579-ba7b45403062?w=600" }
+        ];
+
+        // --- 2. APP LOGIC CLASS ---
+        const app = {
+            users: JSON.parse(localStorage.getItem('velvet_users_v3')) || {},
+            currentUserEmail: localStorage.getItem('velvet_active_email'),
+            cart: [],
+
+            init: function() {
+                this.showView('home');
+                if(this.currentUserEmail) this.refreshProfile();
+            },
+
+            saveData: function() {
+                localStorage.setItem('velvet_users_v3', JSON.stringify(this.users));
+            },
+
+            showView: function(id) {
+                document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+                document.getElementById(id + '-view').classList.add('active');
+                window.scrollTo(0, 0);
+                if(id === 'gallery') this.filterGallery('all');
+                if(id === 'cart') this.renderCart();
+                if(id === 'profile') this.refreshProfile();
+            },
+
+            filterGallery: function(type) {
+                ['all', 'printed', 'handdrawn'].forEach(t => {
+                    const btn = document.getElementById('tab-'+t);
+                    if(t === type) { btn.classList.add('active'); btn.classList.remove('inactive'); }
+                    else { btn.classList.add('inactive'); btn.classList.remove('active'); }
+                });
+
+                const filtered = type === 'all' ? products : products.filter(p => p.type === type);
+                const grid = document.getElementById('gallery-grid');
+                grid.innerHTML = filtered.map(p => `
+                    <div class="bg-white border p-4 group hover:shadow-lg transition">
+                        <div class="aspect-[3/4] bg-gray-100 mb-4 overflow-hidden">
+                            <img src="${p.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        </div>
+                        <div class="flex justify-between items-start mb-2">
+                            <div><h4 class="text-[10px] font-bold uppercase tracking-wide">${p.name}</h4><p class="text-xs text-gray-500 capitalize">${p.type}</p></div>
+                            <span class="text-xs font-bold">${p.price} TK</span>
+                        </div>
+                        <button onclick="app.addToCart(${p.id})" class="btn-black !p-2 mt-2">Add to Bag</button>
+                    </div>
+                `).join('');
+            },
+
+            addToCart: function(id) {
+                const item = products.find(p => p.id === id);
+                this.cart.push(item);
+                document.getElementById('cart-badge').innerText = this.cart.length;
+                alert("Added to Bag");
+            },
+
+            toggleAuth: function(mode) {
+                document.getElementById('form-login').classList.toggle('hidden', mode !== 'login');
+                document.getElementById('form-register').classList.toggle('hidden', mode === 'login');
+                const loginTab = document.getElementById('btn-tab-login');
+                const regTab = document.getElementById('btn-tab-register');
+                if(mode === 'login') {
+                    loginTab.classList.add('active'); loginTab.classList.remove('inactive');
+                    regTab.classList.add('inactive'); regTab.classList.remove('active');
+                } else {
+                    regTab.classList.add('active'); regTab.classList.remove('inactive');
+                    loginTab.classList.add('inactive'); loginTab.classList.remove('active');
+                }
+            },
+
+            register: function() {
+                const email = document.getElementById('su-email').value.trim();
+                if(!email) return alert("Email required");
+                if(this.users[email]) return alert("Account already exists. Please login.");
+                this.users[email] = {
+                    name: document.getElementById('su-name').value,
+                    email: email,
+                    phone: document.getElementById('su-phone').value,
+                    pass: document.getElementById('su-pass').value,
+                    addresses: [], orders: []
+                };
+                this.saveData();
+                this.currentUserEmail = email;
+                localStorage.setItem('velvet_active_email', email);
+                this.refreshProfile();
+            },
+
+            login: function() {
+                const email = document.getElementById('li-email').value.trim();
+                const pass = document.getElementById('li-pass').value;
+                if(this.users[email] && this.users[email].pass === pass) {
+                    this.currentUserEmail = email;
+                    localStorage.setItem('velvet_active_email', email);
+                    this.refreshProfile();
+                } else {
+                    alert("Invalid credentials");
+                }
+            },
+
+            logout: function() {
+                this.currentUserEmail = null;
+                localStorage.removeItem('velvet_active_email');
+                location.reload();
+            },
+
+            refreshProfile: function() {
+                if(!this.currentUserEmail) {
+                    document.getElementById('auth-container').classList.remove('hidden');
+                    document.getElementById('dashboard').classList.add('hidden');
+                    return;
+                }
+                const u = this.users[this.currentUserEmail];
+                document.getElementById('auth-container').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+                document.getElementById('dash-name').innerText = u.name;
+                document.getElementById('edit-name').value = u.name;
+                document.getElementById('edit-email').value = u.email;
+                document.getElementById('edit-phone').value = u.phone;
+                this.renderAddresses();
+                this.renderOrders('all');
+                this.showDash('orders');
+            },
+
+            showDash: function(part) {
+                document.querySelectorAll('.dash-part').forEach(p => p.classList.add('hidden'));
+                document.getElementById('dash-'+part).classList.remove('hidden');
+            },
+
+            toggleAddrForm: function(show) {
+                document.getElementById('addr-form').classList.toggle('hidden', !show);
+                if(show) {
+                    const sel = document.getElementById('addr-div');
+                    sel.innerHTML = '<option value="">Select Division</option>';
+                    Object.keys(bdData).forEach(d => sel.innerHTML += `<option value="${d}">${d}</option>`);
+                }
+            },
+
+            loadDistricts: function() {
+                const div = document.getElementById('addr-div').value;
+                const distSel = document.getElementById('addr-dist');
+                distSel.innerHTML = '<option value="">Select District</option>';
+                document.getElementById('addr-upa').innerHTML = '<option value="">Select Thana / Upazila</option>';
+                if(div && bdData[div]) Object.keys(bdData[div]).forEach(d => distSel.innerHTML += `<option value="${d}">${d}</option>`);
+            },
+
+            loadUpazilas: function() {
+                const div = document.getElementById('addr-div').value;
+                const dist = document.getElementById('addr-dist').value;
+                const upaSel = document.getElementById('addr-upa');
+                upaSel.innerHTML = '<option value="">Select Thana / Upazila</option>';
+                if(div && dist && bdData[div][dist]) bdData[div][dist].forEach(u => upaSel.innerHTML += `<option value="${u}">${u}</option>`);
+            },
+
+            saveAddress: function() {
+                const addr = {
+                    id: Date.now(),
+                    label: document.getElementById('addr-label').value,
+                    postal: document.getElementById('addr-postal').value,
+                    fullAddress: document.getElementById('addr-full').value,
+                    division: document.getElementById('addr-div').value,
+                    district: document.getElementById('addr-dist').value,
+                    upazila: document.getElementById('addr-upa').value
+                };
+
+                if(!addr.division || !addr.district || !addr.upazila || !addr.fullAddress) return alert("Please fill in all location details.");
+
+                const u = this.users[this.currentUserEmail];
+                u.addresses.push(addr);
+                this.saveData();
+                this.renderAddresses();
+                this.toggleAddrForm(false);
+            },
+
+            renderAddresses: function() {
+                const u = this.users[this.currentUserEmail];
+                document.getElementById('addr-list').innerHTML = u.addresses.map(a => `
+                    <div class="border p-4 text-[10px] bg-zinc-50 relative group">
+                        <p class="font-bold uppercase mb-2 text-sm">${a.label}</p>
+                        <p class="mb-1 text-gray-700">${a.fullAddress}</p>
+                        <p class="mb-1">Postal: ${a.postal || 'N/A'}</p>
+                        <p class="font-bold text-gray-500 uppercase">${a.upazila}, ${a.district}, ${a.division}</p>
+                    </div>
+                `).join('');
+            },
+
+            renderCart: function() {
+                const container = document.getElementById('cart-container');
+                if(!this.cart.length) {
+                    container.innerHTML = `<div class="text-center py-20"><h2 class="serif text-3xl mb-4">Your bag is empty</h2><button onclick="app.showView('gallery')" class="btn-black !w-auto px-8">Browse Art</button></div>`;
+                    return;
+                }
+                const u = this.currentUserEmail ? this.users[this.currentUserEmail] : null;
+                const sub = this.cart.reduce((sum, i) => sum + i.price, 0);
+                let addrHtml = `<p class="text-red-500 text-xs font-bold uppercase">Please login to checkout</p>`;
+                if(u) {
+                    if(u.addresses.length) {
+                        addrHtml = `<label class="text-[9px] font-bold uppercase">Shipping Address</label><select id="checkout-addr" onchange="app.calcTotal(${sub}, this.value)"><option value="">Select Address</option>${u.addresses.map(a => `<option value="${a.id}">${a.label} - ${a.division}</option>`).join('')}</select>`;
+                    } else {
+                        addrHtml = `<button onclick="app.showView('profile')" class="text-red-600 underline text-xs font-bold">Add Address in Profile First</button>`;
+                    }
+                }
+                container.innerHTML = `
+                    <div class="grid lg:grid-cols-3 gap-12">
+                        <div class="lg:col-span-2"><h2 class="serif text-2xl mb-6">Shopping Bag</h2>${this.cart.map((item, i) => `<div class="flex items-center gap-4 border-b py-4"><img src="${item.img}" class="w-16 h-20 object-cover"><div class="flex-1"><p class="text-[10px] font-bold uppercase">${item.name}</p><p class="text-xs font-bold">${item.price} TK</p></div><button onclick="app.cart.splice(${i},1); app.renderCart();" class="text-red-500 text-xs font-bold uppercase">Remove</button></div>`).join('')}</div>
+                        <div class="bg-zinc-50 border p-8 h-fit"><h3 class="serif text-xl mb-6">Summary</h3><div class="mb-4">${addrHtml}</div><div class="space-y-2 text-[11px] font-bold uppercase border-t pt-4"><div class="flex justify-between"><span>Subtotal</span><span>${sub} TK</span></div><div class="flex justify-between"><span>Delivery</span><span id="summ-del">0 TK</span></div><div class="flex justify-between text-lg pt-4 border-t"><span>Total</span><span id="summ-total">${sub} TK</span></div></div><button onclick="app.checkout()" class="btn-black mt-6">Confirm Purchase</button></div>
+                    </div>`;
+            },
+
+            calcTotal: function(sub, addrId) {
+                if(!addrId) return;
+                const u = this.users[this.currentUserEmail];
+                const addr = u.addresses.find(a => a.id == addrId);
+                const fee = addr.division === 'Dhaka' ? 80 : 120;
+                document.getElementById('summ-del').innerText = fee + " TK";
+                document.getElementById('summ-total').innerText = (sub + fee) + " TK";
+            },
+
+            checkout: function() {
+                if(!this.currentUserEmail) return;
+                
+                // 1. Validate Address
+                const addrId = document.getElementById('checkout-addr')?.value;
+                if(!addrId) return alert("Select shipping address");
+                
+                const u = this.users[this.currentUserEmail];
+                const addr = u.addresses.find(a => a.id == addrId);
+                
+                // 2. Calculate Totals
+                const fee = addr.division === 'Dhaka' ? 80 : 120;
+                const subtotal = this.cart.reduce((s,i) => s + i.price, 0);
+                const total = subtotal + fee;
+
+                // 3. Prepare Order Data for Email
+                const orderDetails = {
+                    order_id: 'ORD-' + Math.floor(Math.random()*9000),
+                    customer_name: u.name,
+                    customer_email: u.email,
+                    customer_phone: u.phone,
+                    address: `${addr.fullAddress}, ${addr.upazila}, ${addr.district}`,
+                    items: this.cart.map(i => `${i.name} (${i.price} TK)`).join(', '),
+                    total_price: total + " TK"
+                };
+
+                if(confirm(`Confirm purchase for ${total} TK?`)) {
+                    // 4. Send the Automated Email via EmailJS
+                    // Replace "YOUR_SERVICE_ID" and "YOUR_TEMPLATE_ID" with your actual IDs
+                    emailjs.send("service_llsqdn6", "template_ym1uews", orderDetails)
+                        .then(() => {
+                            alert("Order Placed Successfully! You will receive an email confirmation.");
+                            
+                            // 5. Save to user's local history for dashboard
+                            u.orders.push({ 
+                                id: orderDetails.order_id, 
+                                date: new Date().toLocaleDateString(), 
+                                status: 'Pending', 
+                                total: total, 
+                                items: [...app.cart], 
+                                address: addr 
+                            });
+                            
+                            app.saveData();
+                            app.cart = [];
+                            document.getElementById('cart-badge').innerText = 0;
+                            app.showView('profile');
+                        }, (error) => {
+                            alert("FAILED to send order. Please check your internet connection.");
+                            console.error("EmailJS Error:", error);
+                        });
+                }
+            },
+
+            renderOrders: function(status) {
+                const u = this.users[this.currentUserEmail];
+                if(!u) return;
+                // Add default To Review mock if empty
+                if(status === 'To Review' && !u.orders.some(o => o.status === 'Received')) {
+                   document.getElementById('order-list').innerHTML = `<p class="text-xs text-gray-400">You can review items after receiving them.</p>`;
+                   return;
+                }
+                const orders = status === 'all' ? u.orders : u.orders.filter(o => o.status === status);
+                if(!orders.length) { document.getElementById('order-list').innerHTML = `<p class="text-xs text-gray-400 uppercase italic">No ${status} orders.</p>`; return; }
+                document.getElementById('order-list').innerHTML = [...orders].reverse().map(o => `
+                    <div class="border p-5 bg-zinc-50 hover:border-black transition">
+                        <div class="flex justify-between items-start mb-4">
+                            <div><span class="bg-black text-white text-[9px] font-bold uppercase px-2 py-1">${o.status}</span><span class="ml-2 text-[10px] font-bold uppercase text-gray-500">#${o.id} • ${o.date}</span></div>
+                            <span class="serif text-xl">${o.total} TK</span>
+                        </div>
+                        <div class="text-[10px] uppercase text-gray-600 mb-4 border-b pb-2">Ship To: ${o.address.fullAddress}, ${o.address.upazila}</div>
+                        <div class="flex gap-2 overflow-x-auto">${o.items.map(i => `<img src="${i.img}" class="w-10 h-12 object-cover border">`).join('')}</div>
+                    </div>`).join('');
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => app.init());
+    </script>
+</body>
+</html>
